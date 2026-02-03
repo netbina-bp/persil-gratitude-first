@@ -1,6 +1,54 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: "DiodrumArabic";
+  src: url("./assets/fonts/DiodrumArabic-Extralight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DiodrumArabic";
+  src: url("./assets/fonts/DiodrumArabic-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DiodrumArabic";
+  src: url("./assets/fonts/DiodrumArabic-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DiodrumArabic";
+  src: url("./assets/fonts/DiodrumArabic-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DiodrumArabic";
+  src: url("./assets/fonts/DiodrumArabic-Semibold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DiodrumArabic";
+  src: url("./assets/fonts/DiodrumArabic-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -119,5 +167,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "DiodrumArabic", system-ui, -apple-system, "Segoe UI",
+      sans-serif;
   }
 }
