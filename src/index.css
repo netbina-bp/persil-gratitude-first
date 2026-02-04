@@ -171,3 +171,8 @@
       sans-serif;
   }
 }
+
+/* Sonner toast styling */
+[data-sonner-toast] {
+  font-family: "DiodrumArabic", system-ui, -apple-system, "Segoe UI", sans-serif !important;
+}

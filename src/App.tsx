@@ -15,7 +15,17 @@ const App = () => {
 
   return (
     <div className="min-h-screen w-full bg-linear-to-b from-[#ae191d] to-[#cf212b]">
-      <Toaster richColors position="top-center" />
+      <Toaster 
+        richColors 
+        dir="rtl"
+        position="top-center"
+        toastOptions={{
+          style: {
+            marginLeft: 'auto',
+            marginRight: 'auto',
+          },
+        }}
+      />
       <main
         className="mx-auto flex h-screen w-full max-w-md flex-col"
         dir="rtl"
@@ -51,6 +61,7 @@ const App = () => {
                     placeholder="نام و نام خانوادگی"
                     autoComplete="name"
                     aria-invalid={Boolean(errors.fullName)}
+                    variant="rounded"
                     {...register("fullName")}
                   />
                   {errors.fullName && (
@@ -74,6 +85,7 @@ const App = () => {
                     autoComplete="tel"
                     inputMode="numeric"
                     aria-invalid={Boolean(errors.phone)}
+                    variant="rounded"
                     {...register("phone")}
                   />
                   {errors.phone && (
@@ -95,6 +107,7 @@ const App = () => {
                     placeholder="کد ۱۷ رقمی روی محصول"
                     inputMode="numeric"
                     aria-invalid={Boolean(errors.productCode)}
+                    variant="rounded"
                     {...register("productCode")}
                   />
                   {errors.productCode && (
@@ -103,13 +116,13 @@ const App = () => {
                     </p>
                   )}
                 </div>
-                <Button className="w-full" type="submit">
+                <Button className="w-full rounded-full mt-2" type="submit">
                   ثبت اطلاعات
                 </Button>
               </form>
             </div>
             <div className="space-y-2 mt-6">
-              <h1 className="text-base font-bold text-foreground sm:text-3xl">
+              <h1 className="text-base font-semibold text-foreground sm:text-xl">
                 ما در پریل و پرسیل، قدردانی از همدیگر را آنقدر کار مهمی می‌دانیم
                 که هشت سال است هر سال همه را به دانستن قدر همدیگر دعوت می‌کنیم؛
                 دانستن قدر دوستی‌ها، مهربانی‌ها، لطف‌ها و کمک‌ها.

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { submitLottery } from "@/services/api";
 
 const productCodeSchema = z
   .string()
@@ -83,10 +84,20 @@ export const useLotteryForm = () => {
     mode: "onTouched",
   });
 
-  const onSubmit = (data: LotteryFormValues) => {
-    console.log("Lottery data:", data);
-    toast.success("ثبت اطلاعات با موفقیت انجام شد.");
-    form.reset();
+  const onSubmit = async (data: LotteryFormValues) => {
+    try {
+      await submitLottery({
+        name: data.fullName,
+        phone_number: data.phone,
+        code: data.productCode,
+      });
+      toast.success("ثبت اطلاعات با موفقیت انجام شد.");
+      // form.reset();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "ثبت اطلاعات با خطا مواجه شد.";
+      toast.error(message);
+    }
   };
 
   return {
