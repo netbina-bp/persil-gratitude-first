@@ -24,11 +24,31 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// DB config – adjust for your MySQL setup
-$dbHost = 'localhost';
-$dbUser = 'root';
-$dbPass = 'MSBp94141368#'; // use your MySQL root password
-$dbName = 'netbina';
+// Load .env from same directory if present (dev: php/.env; production: set by deploy or server)
+$envFile = __DIR__ . '/.env';
+if (is_readable($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) {
+            continue;
+        }
+        if (strpos($line, '=') !== false) {
+            [$name, $value] = explode('=', $line, 2);
+            $name = trim($name);
+            $value = trim($value, " \t\"'");
+            if ($name !== '') {
+                putenv("$name=$value");
+            }
+        }
+    }
+}
+
+// DB config from env (dev: php/.env; production: GitHub Actions secrets → php/.env on server)
+$dbHost = getenv('DB_HOST') ?: '127.0.0.1';
+$dbPort = getenv('DB_PORT') ?: '3306';
+$dbUser = getenv('DB_USER') ?: 'root';
+$dbPass = getenv('DB_PASS') ?: '';
+$dbName = getenv('DB_NAME') ?: 'netbina';
 
 // Read POST body (supports both form-data and JSON)
 $input = $_POST;
@@ -64,7 +84,7 @@ if (strlen($code) > 50) {
 try {
     // Connect without database first (to create schema if needed)
     $pdo = new PDO(
-        "mysql:host=$dbHost;charset=utf8mb4",
+        "mysql:host=$dbHost;port=$dbPort;charset=utf8mb4",
         $dbUser,
         $dbPass,
         [

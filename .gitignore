@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# PHP API env (dev only; production gets .env from deploy secrets)
+php/.env

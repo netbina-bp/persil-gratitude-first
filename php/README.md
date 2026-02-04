@@ -4,9 +4,13 @@ Simple REST endpoint that accepts POST data and stores it in MySQL.
 
 ## Setup
 
-1. Edit `api.php` and set your MySQL credentials at the top:
-   - `$dbHost`, `$dbUser`, `$dbPass`
-2. Ensure MySQL is running and the root user can create databases.
+**Database config** is read from environment variables (or a `.env` file in this folder).
+
+- **Local/dev:** Copy `.env.example` to `.env` and set `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASS`, `DB_NAME`. Use `127.0.0.1` and port `3306` if MySQL runs in Docker on the host.
+- **Production:** The deploy workflow writes `php/.env` from GitHub Actions secrets (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) so you never commit credentials.
+
+1. For dev: `cp .env.example .env` and fill in your MySQL credentials.
+2. Ensure MySQL is running and the user can create databases.
 
 ## Request
 

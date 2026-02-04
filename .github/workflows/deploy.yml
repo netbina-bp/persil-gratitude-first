@@ -45,9 +45,17 @@ jobs:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           if [ -z "$VPS_HOST" ] || [ -z "$VPS_USER" ] || [ -z "$VPS_PASSWORD" ]; then
-            echo "::error::Missing secrets. Add VPS_HOST, VPS_USER, and VPS_PASSWORD in Settings → Secrets and variables → Actions."
+            echo "::error::Missing VPS secrets. Add VPS_HOST, VPS_USER, VPS_PASSWORD in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          if [ -z "$DB_HOST" ] || [ -z "$DB_USER" ] || [ -z "$DB_PASSWORD" ] || [ -z "$DB_NAME" ]; then
+            echo "::error::Missing DB secrets. Add DB_HOST, DB_USER, DB_PASSWORD, DB_NAME for production API."
             exit 1
           fi
 
@@ -78,6 +86,22 @@ jobs:
           sshpass -p "$VPS_PASSWORD" rsync -avz --delete \
             -e "ssh -o StrictHostKeyChecking=no" \
             dist/ "$VPS_USER@$VPS_HOST:${{ env.REMOTE_PATH }}/"
+
+      - name: Create php/.env from secrets
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          mkdir -p php
+          : > php/.env
+          echo -n 'DB_HOST=' >> php/.env; printf '%s' "$DB_HOST" >> php/.env; echo >> php/.env
+          echo -n 'DB_PORT=' >> php/.env; printf '%s' "${DB_PORT:-3306}" >> php/.env; echo >> php/.env
+          echo -n 'DB_USER=' >> php/.env; printf '%s' "$DB_USER" >> php/.env; echo >> php/.env
+          echo -n 'DB_PASS=' >> php/.env; printf '%s' "$DB_PASSWORD" >> php/.env; echo >> php/.env
+          echo -n 'DB_NAME=' >> php/.env; printf '%s' "$DB_NAME" >> php/.env; echo >> php/.env
 
       - name: Deploy PHP API
         env:
