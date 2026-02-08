@@ -42,7 +42,7 @@ const App = () => {
           className="relative flex h-full w-full flex-1 flex-col items-center justify-start gap-4 bg-linear-to-b from-[#B50006] from-35% to-white to-80% text-center sm:gap-5"
           dir="rtl"
         >
-          <div className="absolute right-1 left-1 z-0 h-[300px] w-full bg-[url(./assets/images/img-gift-box.png)] bg-contain bg-center bg-no-repeat sm:bg-cover" />
+          <div className="absolute right-1 left-1 z-0 h-[300px] w-full bg-[url(./assets/images/img-gift-box.png)] bg-contain bg-top bg-no-repeat sm:h-[400px]" />
           <div
             className="relative w-full max-w-xs rounded-[28px] p-6 shadow-2xl sm:max-w-lg sm:p-8"
             style={{
