@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="none">
+  <defs>
+    <linearGradient id="gold1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="100%" style="stop-color:#B8860B"/>
+    </linearGradient>
+    <linearGradient id="gold2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37"/>
+      <stop offset="100%" style="stop-color:#8B7355"/>
+    </linearGradient>
+    <linearGradient id="gold3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C5B358"/>
+      <stop offset="100%" style="stop-color:#FFD700"/>
+    </linearGradient>
+  </defs>
+  <!-- Confetti flakes (small rects) -->
+  <g fill="url(#gold1)">
+    <rect x="50" y="0" width="8" height="5" rx="1" transform="rotate(-15 54 2.5)">
+      <animate attributeName="y" from="-10" to="620" dur="3.2s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="x" from="50" to="65" dur="3.2s" repeatCount="indefinite" begin="0s"/>
+    </rect>
+    <rect x="120" y="0" width="6" height="4" rx="1" transform="rotate(10 123 2)">
+      <animate attributeName="y" from="-10" to="620" dur="2.8s" repeatCount="indefinite" begin="0.4s"/>
+      <animate attributeName="x" from="120" to="108" dur="2.8s" repeatCount="indefinite" begin="0.4s"/>
+    </rect>
+    <rect x="200" y="0" width="7" height="5" rx="1" transform="rotate(-8 203.5 2.5)">
+      <animate attributeName="y" from="-10" to="620" dur="3.5s" repeatCount="indefinite" begin="0.2s"/>
+      <animate attributeName="x" from="200" to="218" dur="3.5s" repeatCount="indefinite" begin="0.2s"/>
+    </rect>
+    <rect x="280" y="0" width="5" height="6" rx="1" transform="rotate(12 282.5 3)">
+      <animate attributeName="y" from="-10" to="620" dur="2.6s" repeatCount="indefinite" begin="0.7s"/>
+      <animate attributeName="x" from="280" to="268" dur="2.6s" repeatCount="indefinite" begin="0.7s"/>
+    </rect>
+    <rect x="350" y="0" width="8" height="4" rx="1" transform="rotate(-20 354 2)">
+      <animate attributeName="y" from="-10" to="620" dur="3s" repeatCount="indefinite" begin="0.1s"/>
+      <animate attributeName="x" from="350" to="368" dur="3s" repeatCount="indefinite" begin="0.1s"/>
+    </rect>
+  </g>
+  <g fill="url(#gold2)">
+    <rect x="80" y="0" width="6" height="6" rx="1" transform="rotate(5 83 3)">
+      <animate attributeName="y" from="-15" to="620" dur="2.9s" repeatCount="indefinite" begin="0.5s"/>
+      <animate attributeName="x" from="80" to="72" dur="2.9s" repeatCount="indefinite" begin="0.5s"/>
+    </rect>
+    <rect x="160" y="0" width="7" height="4" rx="1" transform="rotate(-12 163.5 2)">
+      <animate attributeName="y" from="-15" to="620" dur="3.3s" repeatCount="indefinite" begin="0.3s"/>
+      <animate attributeName="x" from="160" to="175" dur="3.3s" repeatCount="indefinite" begin="0.3s"/>
+    </rect>
+    <rect x="240" y="0" width="5" height="5" rx="1" transform="rotate(8 242.5 2.5)">
+      <animate attributeName="y" from="-15" to="620" dur="2.7s" repeatCount="indefinite" begin="0.9s"/>
+      <animate attributeName="x" from="240" to="232" dur="2.7s" repeatCount="indefinite" begin="0.9s"/>
+    </rect>
+    <rect x="320" y="0" width="6" height="5" rx="1" transform="rotate(-5 323 2.5)">
+      <animate attributeName="y" from="-15" to="620" dur="3.1s" repeatCount="indefinite" begin="0.6s"/>
+      <animate attributeName="x" from="320" to="332" dur="3.1s" repeatCount="indefinite" begin="0.6s"/>
+    </rect>
+  </g>
+  <!-- Ribbon-like strokes (thin curved paths falling) -->
+  <g stroke="url(#gold3)" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M30 0 Q35 80 25 160 Q40 240 30 320" opacity="0.9">
+      <animateTransform attributeName="transform" type="translate" from="0 -40" to="0 640" dur="4s" repeatCount="indefinite" begin="0s"/>
+    </path>
+    <path d="M370 0 Q365 70 375 150 Q362 230 370 310" opacity="0.85">
+      <animateTransform attributeName="transform" type="translate" from="0 -40" to="0 640" dur="3.5s" repeatCount="indefinite" begin="0.5s"/>
+    </path>
+    <path d="M100 0 Q110 100 95 200" opacity="0.8">
+      <animateTransform attributeName="transform" type="translate" from="0 -30" to="0 630" dur="2.8s" repeatCount="indefinite" begin="0.2s"/>
+    </path>
+    <path d="M300 0 Q290 90 302 180" opacity="0.85">
+      <animateTransform attributeName="transform" type="translate" from="0 -30" to="0 630" dur="3.2s" repeatCount="indefinite" begin="0.8s"/>
+    </path>
+  </g>
+  <!-- Extra small flakes -->
+  <g fill="#FFD700" opacity="0.9">
+    <circle r="2.5" cx="180" cy="0">
+      <animate attributeName="cy" from="-5" to="620" dur="2.5s" repeatCount="indefinite" begin="0.15s"/>
+      <animate attributeName="cx" from="180" to="172" dur="2.5s" repeatCount="indefinite" begin="0.15s"/>
+    </circle>
+    <circle r="2" cx="220" cy="0">
+      <animate attributeName="cy" from="-5" to="620" dur="3.4s" repeatCount="indefinite" begin="0.45s"/>
+      <animate attributeName="cx" from="220" to="228" dur="3.4s" repeatCount="indefinite" begin="0.45s"/>
+    </circle>
+    <circle r="2.5" cx="140" cy="0">
+      <animate attributeName="cy" from="-5" to="620" dur="2.7s" repeatCount="indefinite" begin="0.6s"/>
+      <animate attributeName="cx" from="140" to="148" dur="2.7s" repeatCount="indefinite" begin="0.6s"/>
+    </circle>
+    <circle r="2" cx="260" cy="0">
+      <animate attributeName="cy" from="-5" to="620" dur="3s" repeatCount="indefinite" begin="0.25s"/>
+      <animate attributeName="cx" from="260" to="252" dur="3s" repeatCount="indefinite" begin="0.25s"/>
+    </circle>
+  </g>
+</svg>

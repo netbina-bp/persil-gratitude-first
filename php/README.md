@@ -48,7 +48,7 @@ From the `php` folder, use the router script so OPTIONS requests are handled cor
 
 ```bash
 cd php
-php -S localhost:8080 router.php
+php -S localhost:8080
 ```
 
 Then:

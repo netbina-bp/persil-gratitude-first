@@ -18,8 +18,8 @@ function Input({
   return (
     <BaseInput
       className={cn(
-        "bg-white/80 placeholder:text-xs",
-        variant === "rounded" && "rounded-full!",
+        "bg-[#ACACAC] border-none h-12 placeholder:text-base placeholder:text-white",
+        variant === "rounded" && "rounded-[16px]!",
         className
       )}
       {...props}
