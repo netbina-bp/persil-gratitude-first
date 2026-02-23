@@ -1,12 +1,14 @@
 <?php
 /**
- * Simple REST API: accepts POST name, phone_number, code and stores in MySQL.
- * Ensures schema `netbina` and table `persil_gratitude` exist before insert.
+ * Simple REST API:
+ * - GET: returns all records from persil_gratitude (all fields).
+ * - POST: accepts name, phone_number, code and stores in MySQL.
+ * Ensures schema `netbina` and table `persil_gratitude` exist.
  */
 
 // CORS: allow all origins
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: *');
 
 // Handle preflight
@@ -17,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 header('Content-Type: application/json; charset=utf-8');
 
-// Only allow POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+$method = $_SERVER['REQUEST_METHOD'];
+if ($method !== 'GET' && $method !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'error' => 'Method Not Allowed']);
     exit;
@@ -50,35 +52,36 @@ $dbUser = getenv('DB_USER') ?: 'root';
 $dbPass = getenv('DB_PASS') ?: '';
 $dbName = getenv('DB_NAME') ?: 'netbina';
 
-// Read POST body (supports both form-data and JSON)
-$input = $_POST;
-if (empty($input) && ($raw = file_get_contents('php://input'))) {
-    $decoded = json_decode($raw, true);
-    if (is_array($decoded)) {
-        $input = $decoded;
+// POST: validate body
+if ($method === 'POST') {
+    $input = $_POST;
+    if (empty($input) && ($raw = file_get_contents('php://input'))) {
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $input = $decoded;
+        }
     }
-}
+    $name        = isset($input['name']) ? trim((string) $input['name']) : '';
+    $phoneNumber = isset($input['phone_number']) ? trim((string) $input['phone_number']) : '';
+    $code        = isset($input['code']) ? trim((string) $input['code']) : '';
 
-$name        = isset($input['name']) ? trim((string) $input['name']) : '';
-$phoneNumber = isset($input['phone_number']) ? trim((string) $input['phone_number']) : '';
-$code        = isset($input['code']) ? trim((string) $input['code']) : '';
+    if ($name === '' || $phoneNumber === '' || $code === '') {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error'   => 'Missing or empty required fields: name, phone_number, code',
+        ]);
+        exit;
+    }
 
-if ($name === '' || $phoneNumber === '' || $code === '') {
-    http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'error'   => 'Missing or empty required fields: name, phone_number, code',
-    ]);
-    exit;
-}
-
-if (strlen($code) > 50) {
-    http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'error'   => 'code must be at most 50 characters',
-    ]);
-    exit;
+    if (strlen($code) > 50) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'error'   => 'code must be at most 50 characters',
+        ]);
+        exit;
+    }
 }
 
 try {
@@ -104,27 +107,54 @@ try {
             name VARCHAR(255) NOT NULL,
             phone_number VARCHAR(100) NOT NULL,
             code VARCHAR(50) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
-    $stmt = $pdo->prepare(
-        'INSERT INTO `persil_gratitude` (name, phone_number, code) VALUES (:name, :phone_number, :code)'
-    );
-    $stmt->execute([
-        ':name'         => $name,
-        ':phone_number' => $phoneNumber,
-        ':code'         => $code,
-    ]);
+    // Migration: add created_at if missing
+    $check = $pdo->query("
+        SELECT 1 FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = " . $pdo->quote($dbName) . "
+          AND TABLE_NAME = 'persil_gratitude'
+          AND COLUMN_NAME = 'created_at'
+    ");
+    if ($check && !$check->fetch()) {
+        $pdo->exec("
+            ALTER TABLE `persil_gratitude`
+            ADD COLUMN `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
+        ");
+    }
 
-    $id = (int) $pdo->lastInsertId();
+    if ($method === 'GET') {
+        $stmt = $pdo->query('SELECT * FROM `persil_gratitude` ORDER BY id');
+        $rows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+        echo json_encode([
+            'success' => true,
+            'data'    => $rows,
+        ]);
+        exit;
+    }
 
-    http_response_code(201);
-    echo json_encode([
-        'success' => true,
-        'message' => 'Record created',
-        'id'      => $id,
-    ]);
+    if ($method === 'POST') {
+        // POST: insert
+        $stmt = $pdo->prepare(
+            'INSERT INTO `persil_gratitude` (name, phone_number, code) VALUES (:name, :phone_number, :code)'
+        );
+        $stmt->execute([
+            ':name'         => $name,
+            ':phone_number' => $phoneNumber,
+            ':code'         => $code,
+        ]);
+
+        $id = (int) $pdo->lastInsertId();
+
+        http_response_code(201);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Record created',
+            'id'      => $id,
+        ]);
+    }    
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([

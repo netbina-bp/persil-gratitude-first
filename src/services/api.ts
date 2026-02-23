@@ -42,3 +42,35 @@ export async function submitLottery(
 
   return data as LotterySuccessResponse;
 }
+
+// List users (admin)
+export type PersilGratitudeRecord = {
+  id: string;
+  name: string;
+  phone_number: string;
+  code: string;
+  created_at: string | null;
+};
+
+export type UsersListResponse = {
+  success: true;
+  data: PersilGratitudeRecord[];
+};
+
+export type UsersListErrorResponse = {
+  success: false;
+  error: string;
+};
+
+export type UsersListApiResponse = UsersListResponse | UsersListErrorResponse;
+
+export async function getUsersList(): Promise<UsersListResponse> {
+  const { data } = await api.get<UsersListApiResponse>("api.php");
+
+  if (!data.success) {
+    const err = data as UsersListErrorResponse;
+    throw new Error(err.error ?? "خطایی رخ داد.");
+  }
+
+  return data as UsersListResponse;
+}
