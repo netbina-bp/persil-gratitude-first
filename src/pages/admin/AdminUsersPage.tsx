@@ -1,5 +1,11 @@
 import { flexRender } from '@tanstack/react-table'
-import { ChevronLeft, ChevronRight, Users, Calendar } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  Users,
+  Calendar,
+  Download,
+} from 'lucide-react'
 
 import {
   Table,
@@ -24,6 +30,7 @@ const AdminUsersPage = () => {
     dailyStats,
     columns,
     onPageSizeChange,
+    exportToExcel,
   } = useAdminUsersPage()
 
   if (loading) {
@@ -111,7 +118,17 @@ const AdminUsersPage = () => {
         <div className="rounded-xl border border-neutral-200 bg-white shadow-sm">
           <div className="border-b border-neutral-200 px-4 py-3 sm:flex sm:items-center sm:justify-between">
             <span className="text-sm text-neutral-600">لیست کاربران</span>
-            <div className="mt-2 flex items-center gap-3 sm:mt-0">
+            <div className="mt-2 flex flex-wrap items-center gap-3 sm:mt-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportToExcel(data)}
+                disabled={data.length === 0}
+                className="gap-1.5"
+              >
+                <Download className="size-4" />
+                خروجی اکسل
+              </Button>
               <span className="text-sm text-neutral-500">
                 تعداد در هر صفحه:
               </span>

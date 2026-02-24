@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 
 import App from "./App.tsx";
-import AdminUsersPage from "./pages/AdminUsersPage.tsx";
+import AdminUsersPage from "./pages/admin/AdminUsersPage.tsx";
 import { GoogleAnalytics } from "./components/analytics/GoogleAnalytics.tsx";
 
 createRoot(document.getElementById("root")!).render(

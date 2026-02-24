@@ -126,7 +126,17 @@ try {
     }
 
     if ($method === 'GET') {
-        $stmt = $pdo->query('SELECT * FROM `persil_gratitude` ORDER BY id');
+        // One row per unique code; for each code use the latest record (by id) for phone_number and other fields
+        $stmt = $pdo->query("
+            SELECT p.id, p.name, p.phone_number, p.code, p.created_at
+            FROM `persil_gratitude` p
+            INNER JOIN (
+                SELECT code, MAX(id) AS max_id
+                FROM `persil_gratitude`
+                GROUP BY code
+            ) t ON p.code = t.code AND p.id = t.max_id
+            ORDER BY p.id
+        ");
         $rows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
         echo json_encode([
             'success' => true,

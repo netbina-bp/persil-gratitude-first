@@ -125,8 +125,7 @@ const App = () => {
       </main>
       <SuccessModal
         open={showSuccessModal}
-        onOpenChange={(val) => {
-          console.log('###', val)
+        onOpenChange={(val) => {          
           setShowSuccessModal(val)
         }}
       />

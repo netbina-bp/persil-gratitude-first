@@ -6,6 +6,7 @@ import {
   createColumnHelper,
   type ColumnDef,
 } from '@tanstack/react-table'
+import * as XLSX from 'xlsx'
 
 import { getUsersList, type PersilGratitudeRecord } from '@/services/api'
 import { toPersianDateKey, formatPersianDateTime } from '@/lib/date'
@@ -88,6 +89,23 @@ const useAdminUsersPage = () => {
     table.setPageIndex(0)
   }
 
+  const exportToExcel = (data: PersilGratitudeRecord[]) => {
+    const headers = ['شناسه', 'نام', 'شماره تماس', 'کد', 'تاریخ ثبت']
+    const rows = data.map((r) => [
+      r.id,
+      r.name,
+      r.phone_number,
+      r.code,
+      formatPersianDateTime(r.created_at),
+    ])
+    const sheetData = [headers, ...rows]
+    const ws = XLSX.utils.aoa_to_sheet(sheetData)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'کاربران')
+    const fileName = `persil-gratitude-users-${new Date().toISOString().slice(0, 10)}.xlsx`
+    XLSX.writeFile(wb, fileName)
+  }
+
   useEffect(() => {
     getData()
   }, [])
@@ -101,6 +119,7 @@ const useAdminUsersPage = () => {
     table,
     dailyStats,
     onPageSizeChange,
+    exportToExcel,
   }
 }
 
