@@ -74,11 +74,13 @@ if ($method === 'POST') {
         exit;
     }
 
-    if (strlen($code) > 50) {
+    require_once __DIR__ . '/validationUtil.php';
+    $codeValidation = validateProductCode($code);
+    if (!$codeValidation['valid']) {
         http_response_code(400);
         echo json_encode([
             'success' => false,
-            'error'   => 'code must be at most 50 characters',
+            'error'   => $codeValidation['error'],
         ]);
         exit;
     }
