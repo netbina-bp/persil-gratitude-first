@@ -26,6 +26,8 @@ if ($method !== 'GET' && $method !== 'POST') {
     exit;
 }
 
+require_once __DIR__ . '/validationUtil.php';
+
 // Load .env from same directory if present (dev: php/.env; production: set by deploy or server)
 $envFile = __DIR__ . '/.env';
 if (is_readable($envFile)) {
@@ -74,11 +76,12 @@ if ($method === 'POST') {
         exit;
     }
 
-    if (strlen($code) > 50) {
+    $codeValidation = validateProductCode($code);
+    if (!$codeValidation['valid']) {
         http_response_code(400);
         echo json_encode([
             'success' => false,
-            'error'   => 'code must be at most 50 characters',
+            'error'   => $codeValidation['error'],
         ]);
         exit;
     }
@@ -126,8 +129,22 @@ try {
     }
 
     if ($method === 'GET') {
-        // One row per unique code; for each code use the latest record (by id) for phone_number and other fields
-        $stmt = $pdo->query("
+        $fromDate = isset($_GET['fromDate']) ? trim((string) $_GET['fromDate']) : '';
+        $toDate   = isset($_GET['toDate']) ? trim((string) $_GET['toDate']) : '';
+
+        $dateRangeValidation = validateDateRange($fromDate, $toDate);
+        if (!$dateRangeValidation['valid']) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error'   => $dateRangeValidation['error'],
+            ]);
+            exit;
+        }
+
+        // One row per unique code; for each code use the latest record (by id) for phone_number and other fields.
+        // Optional date filters are bound as parameters to prevent SQL injection.
+        $sql = "
             SELECT p.id, p.name, p.phone_number, p.code, p.created_at
             FROM `persil_gratitude` p
             INNER JOIN (
@@ -135,9 +152,31 @@ try {
                 FROM `persil_gratitude`
                 GROUP BY code
             ) t ON p.code = t.code AND p.id = t.max_id
-            ORDER BY p.id
-        ");
-        $rows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+        ";
+        $conditions = [];
+        $params = [];
+
+        if ($fromDate !== '') {
+            $conditions[] = 'p.created_at >= :fromDate';
+            $params[':fromDate'] = $fromDate . ' 00:00:00';
+        }
+
+        if ($toDate !== '') {
+            $toDateObj = new DateTime($toDate);
+            $toDateObj->modify('+1 day');
+            $conditions[] = 'p.created_at < :toDateExclusive';
+            $params[':toDateExclusive'] = $toDateObj->format('Y-m-d') . ' 00:00:00';
+        }
+
+        if (!empty($conditions)) {
+            $sql .= ' WHERE ' . implode(' AND ', $conditions);
+        }
+
+        $sql .= ' ORDER BY p.id';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode([
             'success' => true,
             'data'    => $rows,
