@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,6 +7,7 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table'
 import * as XLSX from 'xlsx'
+import { format as formatGregorianDate } from 'date-fns'
 
 import { getUsersList, type PersilGratitudeRecord } from '@/services/api'
 import { toPersianDateKey, formatPersianDateTime } from '@/lib/date'
@@ -18,6 +19,8 @@ const useAdminUsersPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pageSize, setPageSize] = useState<number>(10)
+  const [fromDate, setFromDate] = useState<string | undefined>()
+  const [toDate, setToDate] = useState<string | undefined>()
 
   const groupByDate = (
     records: PersilGratitudeRecord[],
@@ -32,18 +35,18 @@ const useAdminUsersPage = () => {
       .sort((a, b) => b.date.localeCompare(a.date))
   }
 
-  const getData = async () => {
+  const getData = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const res = await getUsersList()
+      const res = await getUsersList({ fromDate, toDate })
       setData(res.data)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'خطا در بارگذاری')
     } finally {
       setLoading(false)
     }
-  }
+  }, [fromDate, toDate])
 
   const dailyStats = useMemo(() => groupByDate(data), [data])
 
@@ -89,6 +92,15 @@ const useAdminUsersPage = () => {
     table.setPageIndex(0)
   }
 
+  const onDateRangeChange = (range?: { from?: Date; to?: Date }) => {
+    setFromDate(
+      range?.from ? formatGregorianDate(range.from, 'yyyy-MM-dd') : undefined,
+    )
+    setToDate(
+      range?.to ? formatGregorianDate(range.to, 'yyyy-MM-dd') : undefined,
+    )
+  }
+
   const exportToExcel = (data: PersilGratitudeRecord[]) => {
     const headers = ['شناسه', 'نام', 'شماره تماس', 'کد', 'تاریخ ثبت']
     const rows = data.map((r) => [
@@ -108,7 +120,7 @@ const useAdminUsersPage = () => {
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [getData])
 
   return {
     data,
@@ -119,6 +131,7 @@ const useAdminUsersPage = () => {
     table,
     dailyStats,
     onPageSizeChange,
+    onDateRangeChange,
     exportToExcel,
   }
 }

@@ -6,6 +6,9 @@
 
 const VALIDATION_ERROR_CODE_LENGTH = 'کد محصول باید ۱۷ رقم باشد.';
 const VALIDATION_ERROR_CODE_INVALID = 'کد درج شده صحیح نمی باشد';
+const VALIDATION_ERROR_FROM_DATE_INVALID = 'Invalid fromDate format. Use YYYY-MM-DD.';
+const VALIDATION_ERROR_TO_DATE_INVALID = 'Invalid toDate format. Use YYYY-MM-DD.';
+const VALIDATION_ERROR_DATE_RANGE_INVALID = 'fromDate must be less than or equal to toDate.';
 
 /**
  * Validate product code: 17 digits with segment rules.
@@ -50,6 +53,46 @@ function validateProductCode(string $code): array
     }
     if ($tail < 10000 || $tail > 900000) {
         return ['valid' => false, 'error' => VALIDATION_ERROR_CODE_INVALID];
+    }
+
+    return ['valid' => true];
+}
+
+/**
+ * Validate strict date format (YYYY-MM-DD).
+ *
+ * @param string $date Date string to validate.
+ * @return bool
+ */
+function validateIsoDate(string $date): bool
+{
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+        return false;
+    }
+
+    $dt = DateTime::createFromFormat('Y-m-d', $date);
+    return $dt !== false && $dt->format('Y-m-d') === $date;
+}
+
+/**
+ * Validate optional fromDate / toDate query values.
+ *
+ * @param string $fromDate Empty or YYYY-MM-DD.
+ * @param string $toDate Empty or YYYY-MM-DD.
+ * @return array{valid: bool, error?: string}
+ */
+function validateDateRange(string $fromDate, string $toDate): array
+{
+    if ($fromDate !== '' && !validateIsoDate($fromDate)) {
+        return ['valid' => false, 'error' => VALIDATION_ERROR_FROM_DATE_INVALID];
+    }
+
+    if ($toDate !== '' && !validateIsoDate($toDate)) {
+        return ['valid' => false, 'error' => VALIDATION_ERROR_TO_DATE_INVALID];
+    }
+
+    if ($fromDate !== '' && $toDate !== '' && $fromDate > $toDate) {
+        return ['valid' => false, 'error' => VALIDATION_ERROR_DATE_RANGE_INVALID];
     }
 
     return ['valid' => true];
