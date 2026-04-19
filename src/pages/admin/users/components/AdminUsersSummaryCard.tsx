@@ -25,7 +25,7 @@ const AdminUsersSummaryCard = ({
         ) : error ? (
           <p className="text-sm text-red-600">خطا در دریافت آمار</p>
         ) : (
-          <p className="text-2xl font-semibold text-neutral-800">
+          <p className="font-sans text-2xl font-semibold text-neutral-800 tabular-nums">
             {totalUsers}
           </p>
         )}
