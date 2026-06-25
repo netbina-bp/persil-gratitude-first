@@ -5,11 +5,11 @@ import './index.css'
 
 import App from './App.tsx'
 import AdminUsersPage from './pages/admin/users/AdminUsersPage.tsx'
-import { GoogleAnalytics } from './components/analytics/GoogleAnalytics.tsx'
+// import { GoogleAnalytics } from './components/analytics/GoogleAnalytics.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <GoogleAnalytics />
+    {/* <GoogleAnalytics /> */}
     <Routes>
       <Route path="/" element={<App />} />
       <Route path="/admin" element={<AdminUsersPage />} />

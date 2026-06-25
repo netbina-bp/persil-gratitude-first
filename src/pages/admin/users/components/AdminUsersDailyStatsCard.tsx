@@ -65,7 +65,9 @@ const AdminUsersDailyStatsCard = ({
                     <TableCell className="font-medium">
                       {date.replace(/-/g, '/')}
                     </TableCell>
-                    <TableCell>{count}</TableCell>
+                    <TableCell className="font-sans tabular-nums">
+                      {count}
+                    </TableCell>
                   </TableRow>
                 ))
               )}

@@ -25,7 +25,7 @@ const productCodeSchema = z
       })
     }
 
-    if (month < 1 || month > 3) {
+    if (month < 1 || month > 5) {
       ctx.addIssue({
         code: 'custom',
         message: 'کد درج شده صحیح نمی باشد',

@@ -64,15 +64,21 @@ const useAdminUsersPage = () => {
         }),
         columnHelper.accessor('phone_number', {
           header: 'شماره تماس',
-          cell: (c) => c.getValue(),
+          cell: (c) => <span className="tabular-nums">{c.getValue()}</span>,
         }),
         columnHelper.accessor('code', {
           header: 'کد',
-          cell: (c) => c.getValue(),
+          cell: (c) => (
+            <span className="font-sans tabular-nums">{c.getValue()}</span>
+          ),
         }),
         columnHelper.accessor('created_at', {
           header: 'تاریخ ثبت',
-          cell: (c) => formatPersianDateTime(c.getValue()),
+          cell: (c) => (
+            <span className="font-sans">
+              {formatPersianDateTime(c.getValue())}
+            </span>
+          ),
         }),
       ] as ColumnDef<PersilGratitudeRecord, unknown>[],
     [columnHelper],
@@ -120,7 +126,7 @@ const useAdminUsersPage = () => {
 
   useEffect(() => {
     getData()
-  }, [getData])
+  }, [])
 
   return {
     data,
