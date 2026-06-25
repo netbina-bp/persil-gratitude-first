@@ -36,7 +36,7 @@ function validateProductCode(string $code): array
     if ($day < 1 || $day > 31) {
         return ['valid' => false, 'error' => VALIDATION_ERROR_CODE_INVALID];
     }
-    if ($month < 1 || $month > 3) {
+    if ($month < 1 || $month > 5) {
         return ['valid' => false, 'error' => VALIDATION_ERROR_CODE_INVALID];
     }
     if ($fixed !== '26') {
